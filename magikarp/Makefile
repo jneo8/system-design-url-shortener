@@ -1,5 +1,17 @@
 GO := go
 
+##@ Lint
+
+install-lint:  ## Install golangci-lint binary to ./bin
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.31.0
+
+lint-testing:  ## Run lint
+	./bin/golangci-lint run ./...
+
+.PHONY: install-lint lint-testing
+
+##@ Go CMD
+
 run:  ## Run
 	${GO} run cmd/*.go
 

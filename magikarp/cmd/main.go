@@ -5,20 +5,40 @@ import (
 	"github.com/jneo8/mermaid"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/system-design-url-shortener/magikarp/api"
+	"github.com/system-design-url-shortener/magikarp/entity"
+	"github.com/system-design-url-shortener/magikarp/pkg/shortenurl"
 	"os"
 )
+
+func init() {
+	cmd.Flags().String("log_level", "DEBUG", "Logger Level")
+	cmd.Flags().String("api_dev_key", "abcdefg", "API dev key")
+}
 
 var cmd = &cobra.Command{
 	Use:   "run",
 	Short: "run",
+	Long:  "run " + appName,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		initializers := []interface{}{}
+		initializers := []interface{}{
+			shortenurl.New,
+		}
 		return mermaid.Run(cmd, runable, initializers...)
 	},
 }
 
-func runable(logger *log.Logger) error {
-	logger.Info(123)
+func runable(cfg *viper.Viper, logger *log.Logger, shortenURLService entity.ShortenURLService) error {
+	r, err := api.RegisterAPI(logger, cfg.GetString("api_dev_key"), shortenURLService)
+	if err != nil {
+		logger.Error(err)
+		return err
+	}
+	if err := r.Run(); err != nil {
+		logger.Error(err)
+		return err
+	}
 	return nil
 }
 

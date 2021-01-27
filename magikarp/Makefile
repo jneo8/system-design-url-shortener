@@ -15,7 +15,17 @@ lint-testing:  ## Run lint
 run:  ## Run
 	${GO} run cmd/*.go
 
-.PHONY: run
+run-dev:  ## Run as developer mode
+	${GO} run cmd/*.go --log_level debug
+
+.PHONY: run run-dev
+
+##@ Dev testing
+
+test-service-up:  ## Service up for dev testing.
+	docker-compose -f ./docker-compose.test.yaml up -d
+
+.PHONY: test-service-up
 
 ##@ Help
 

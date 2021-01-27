@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres_pwd
+      POSTGRES_USER: postgres

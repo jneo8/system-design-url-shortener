@@ -6,10 +6,10 @@ import (
 
 // URL ...
 type URL struct {
-	UserUUID    uuid.UUID // Creater.
-	Key         uuid.UUID // Primary key.
+	UserID      uuid.UUID
+	Key         uuid.UUID
 	OriginalURL string
-	ShortenURL  string
-	ExpireDate  int64
+	ShortURL    string
+	ExpireTime  int64
 	CreateTime  int64
 }

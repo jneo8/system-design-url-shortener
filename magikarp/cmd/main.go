@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/system-design-url-shortener/magikarp/api"
 	"github.com/system-design-url-shortener/magikarp/entity"
+	"github.com/system-design-url-shortener/magikarp/pkg/repository/cache"
 	"github.com/system-design-url-shortener/magikarp/pkg/repository/postgres"
 	"github.com/system-design-url-shortener/magikarp/pkg/shortenurl"
 	"os"
@@ -31,6 +32,7 @@ var cmd = &cobra.Command{
 		initializers := []interface{}{
 			shortenurl.New,
 			postgres.New,
+			cache.New,
 		}
 		return mermaid.Run(cmd, runable, initializers...)
 	},

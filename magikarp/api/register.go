@@ -11,7 +11,7 @@ var logger *log.Logger
 var apiDevKey string
 
 // RegisterAPI for API endpoints.
-func RegisterAPI(newLogger *log.Logger, newAPIDevKey string, service entity.ShortenURLService) (*gin.Engine, error) {
+func RegisterAPI(newLogger *log.Logger, newAPIDevKey string, shortenURLService entity.ShortenURLService) (*gin.Engine, error) {
 
 	logger = newLogger
 	apiDevKey = newAPIDevKey
@@ -19,10 +19,10 @@ func RegisterAPI(newLogger *log.Logger, newAPIDevKey string, service entity.Shor
 
 	r := gin.New()
 
-	r.GET("/:shortURL", getFunc(service))
+	r.GET("/:shortURL", getFunc(shortenURLService))
 
 	// shorten url
-	r.POST("/url", shortenerFunc(service))
+	r.POST("/url", shortenerFunc(shortenURLService))
 
 	return r, nil
 }

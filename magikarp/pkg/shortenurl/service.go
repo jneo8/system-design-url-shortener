@@ -17,9 +17,10 @@ func init() {
 }
 
 type service struct {
-	URLBackend entity.URLBackend
-	Config     Config
-	Logger     *log.Logger
+	URLBackend   entity.URLBackend
+	CacheBackend entity.CacheBackend
+	Config       Config
+	Logger       *log.Logger
 }
 
 func (s *service) ShortenURL(originalURL string, expireTime int64, userID *uuid.UUID) (entity.URL, error) {
@@ -43,8 +44,22 @@ func (s *service) DeleteURL(urlID int64) error {
 	return nil
 }
 
-func (s *service) GetByShortURL(url string) (entity.URL, error) {
-	return s.URLBackend.GetURLByShortURL(url)
+func (s *service) GetByShortURL(shortURL string) (string, error) {
+	// Get url from cache.
+	if originalURL, ok := s.CacheBackend.Get(shortURL); ok {
+		s.Logger.Debugf("Get url from cache: %s -> %s", shortURL, originalURL)
+		return originalURL, nil
+	}
+
+	// If url not in cache, get from cache.
+	url, err := s.URLBackend.GetURLByShortURL(shortURL)
+	// Set cache.
+	if err == nil {
+		if err := s.CacheBackend.Set(url); err != nil {
+			s.Logger.Warning(err)
+		}
+	}
+	return url.OriginalURL, err
 }
 
 // Same user get the same url back.

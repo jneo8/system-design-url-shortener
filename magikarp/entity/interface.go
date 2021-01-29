@@ -15,7 +15,7 @@ type ShortenURLService interface {
 
 	GetByShortURL(
 		url string,
-	) (originalURL URL, err error)
+	) (originalURL string, err error)
 
 	// Delete url from DB.
 	DeleteURL(
@@ -29,4 +29,10 @@ type URLBackend interface {
 	DeleteURL(urlID int64) error
 	GetURLByShortURL(shortURL string) (url URL, err error)
 	InitSchema() error
+}
+
+// CacheBackend is interface for shortenURL cache.
+type CacheBackend interface {
+	Set(url URL) error
+	Get(url string) (string, bool)
 }

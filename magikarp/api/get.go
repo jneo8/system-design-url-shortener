@@ -6,10 +6,11 @@ import (
 	"net/http"
 )
 
-func getFunc(service entity.ShortenURLService) gin.HandlerFunc {
+func getFunc(urlBackend entity.ShortenURLService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		shortURL := c.Param("shortURL")
-		url, err := service.GetByShortURL(shortURL)
+
+		url, err := urlBackend.GetByShortURL(shortURL)
 
 		if err != nil {
 			c.JSON(
@@ -20,6 +21,8 @@ func getFunc(service entity.ShortenURLService) gin.HandlerFunc {
 			)
 			return
 		}
-		c.Redirect(http.StatusMovedPermanently, url.OriginalURL)
+		// TODO: Log to analysis system.
+		logger.Debug(c.Request, url)
+		c.Redirect(http.StatusMovedPermanently, url)
 	}
 }

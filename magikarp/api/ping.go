@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func pingFunc() gin.HandlerFunc {
+func pingFunc() gin.HandlerFunc { // nolint
 	return func(c *gin.Context) {
 		c.JSON(
 			http.StatusOK,

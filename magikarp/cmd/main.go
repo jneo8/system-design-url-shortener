@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/system-design-url-shortener/magikarp/api"
 	"github.com/system-design-url-shortener/magikarp/entity"
+	"github.com/system-design-url-shortener/magikarp/pkg/repository/postgres"
 	"github.com/system-design-url-shortener/magikarp/pkg/shortenurl"
 	"os"
 )
@@ -15,6 +16,11 @@ import (
 func init() {
 	cmd.Flags().String("log_level", "DEBUG", "Logger Level")
 	cmd.Flags().String("api_dev_key", "abcdefg", "API dev key")
+	// Postgres
+	cmd.Flags().String("postgres_dsn", "postgres://postgres:postgres_pwd@localhost:5432/magikarp", "data source name, refer https://github.com/jackc/pgx")
+	cmd.Flags().Bool("postgres_prefer_simple_protocol", true, "disables implicit prepared statement usage. By default pgx automatically uses the extended protocol")
+	// shortenURL
+	cmd.Flags().Int("shortenurl_url_length", 6, "Encoded URL length.")
 }
 
 var cmd = &cobra.Command{
@@ -24,6 +30,7 @@ var cmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		initializers := []interface{}{
 			shortenurl.New,
+			postgres.New,
 		}
 		return mermaid.Run(cmd, runable, initializers...)
 	},

@@ -10,19 +10,19 @@ type ShortenURLService interface {
 	ShortenURL(
 		originalURL string,
 		expireTime int64,
-		userID uuid.UUID,
+		userID *uuid.UUID,
 	) (url URL, err error)
 
 	// Delete url from DB.
 	DeleteURL(
-		urlKey uuid.UUID,
+		urlID int64,
 	) (err error)
 }
 
 // URLBackend is repository interface for all db backend.
 type URLBackend interface {
 	NewURL(url URL) (URL, error)
-	DeleteURL(key uuid.UUID) error
+	DeleteURL(urlID int64) error
 	GetURLByShortURL(shortURL string) (url URL, err error)
 	InitSchema() error
 }

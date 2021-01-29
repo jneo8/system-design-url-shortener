@@ -8,10 +8,10 @@ import (
 )
 
 type shortenerFuncForm struct {
-	APIDevKey   string    `form:"api_dev_key"`
-	UserID      uuid.UUID `form:"userID"`
-	OriginalURL string    `form:"originalURL" binding:"required"`
-	ExpireTime  int64     `form:"expireTime"`
+	APIDevKey   string     `form:"api_dev_key"`
+	UserID      *uuid.UUID `form:"userID"`
+	OriginalURL string     `form:"originalURL" binding:"required"`
+	ExpireTime  int64      `form:"expireTime"`
 }
 
 func shortenerFunc(service entity.ShortenURLService) gin.HandlerFunc {

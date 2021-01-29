@@ -1,15 +1,15 @@
-package entity
+package postgres
 
 import (
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // URL ...
 type URL struct {
+	gorm.Model
 	UserID      *uuid.UUID
-	URLID       uint
 	OriginalURL string
 	ShortURL    string
 	ExpireTime  int64
-	CreateTime  int64
 }

@@ -8,16 +8,17 @@ import (
 )
 
 type shortenerFuncForm struct {
-	APIDevKey   string     `form:"api_dev_key"`
-	UserID      *uuid.UUID `form:"userID"`
-	OriginalURL string     `form:"originalURL" binding:"required"`
-	ExpireTime  int64      `form:"expireTime"`
+	APIDevKey   string `form:"api_dev_key"`
+	UserID      string `form:"userID" binding:"uuid"`
+	OriginalURL string `form:"originalURL" binding:"required"`
+	ExpireTime  int64  `form:"expireTime"`
 }
 
 func shortenerFunc(service entity.ShortenURLService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var form shortenerFuncForm
 		if err := c.Bind(&form); err != nil {
+			logger.Debug(err)
 			c.JSON(
 				http.StatusBadRequest,
 				gin.H{
@@ -31,11 +32,12 @@ func shortenerFunc(service entity.ShortenURLService) gin.HandlerFunc {
 			logger.Debug("Not dev")
 			// TODO: Check rate limit.
 		}
+		userID := uuid.MustParse(form.UserID)
 
 		url, err := service.ShortenURL(
 			form.OriginalURL,
 			form.ExpireTime,
-			form.UserID,
+			&userID,
 		)
 
 		if err != nil {

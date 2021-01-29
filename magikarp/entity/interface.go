@@ -13,6 +13,10 @@ type ShortenURLService interface {
 		userID *uuid.UUID,
 	) (url URL, err error)
 
+	GetByShortURL(
+		url string,
+	) (originalURL URL, err error)
+
 	// Delete url from DB.
 	DeleteURL(
 		urlID int64,

@@ -2,8 +2,18 @@ package postgres
 
 import (
 	"github.com/google/uuid"
+	"github.com/system-design-url-shortener/magikarp/entity"
 	"gorm.io/gorm"
 )
+
+func entityURLToURL(url entity.URL) URL {
+	return URL{
+		UserID:      url.UserID,
+		OriginalURL: url.OriginalURL,
+		ShortURL:    url.ShortURL,
+		ExpireTime:  url.ExpireTime,
+	}
+}
 
 // URL ...
 type URL struct {
@@ -12,4 +22,14 @@ type URL struct {
 	OriginalURL string
 	ShortURL    string
 	ExpireTime  int64
+}
+
+func (url *URL) toEntityURL() entity.URL {
+	return entity.URL{
+		UserID:      url.UserID,
+		URLID:       url.Model.ID,
+		OriginalURL: url.OriginalURL,
+		ShortURL:    url.ShortURL,
+		ExpireTime:  url.ExpireTime,
+		CreateTime:  url.Model.CreatedAt.UnixNano()}
 }

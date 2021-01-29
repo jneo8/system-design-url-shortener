@@ -19,8 +19,7 @@ func RegisterAPI(newLogger *log.Logger, newAPIDevKey string, service entity.Shor
 
 	r := gin.New()
 
-	// Ping/Pong.
-	r.GET("/ping", pingFunc())
+	r.GET("/:shortURL", getFunc(service))
 
 	// shorten url
 	r.POST("/url", shortenerFunc(service))

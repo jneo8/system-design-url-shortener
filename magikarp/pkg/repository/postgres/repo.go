@@ -21,8 +21,14 @@ func (r *repo) InitSchema() error {
 
 func (r *repo) NewURL(url entity.URL) (entity.URL, error) {
 	newURL := entityURLToURL(url)
-	if result := r.DB.Create(&newURL); result.Error != nil {
-		return entity.URL{}, result.Error
+	if url.EmptyUser() {
+		if result := r.DB.Create(&newURL); result.Error != nil {
+			return entity.URL{}, result.Error
+		}
+	} else {
+		if result := r.DB.FirstOrCreate(&newURL, URL{UserID: newURL.UserID, OriginalURL: newURL.OriginalURL}); result.Error != nil {
+			return entity.URL{}, result.Error
+		}
 	}
 
 	return newURL.toEntityURL(), nil

@@ -13,3 +13,8 @@ type URL struct {
 	ExpireTime  int64
 	CreateTime  int64
 }
+
+// EmptyUser return true if user is empty.
+func (u *URL) EmptyUser() bool {
+	return u.UserID == nil
+}

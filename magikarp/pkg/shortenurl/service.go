@@ -23,6 +23,9 @@ type service struct {
 }
 
 func (s *service) ShortenURL(originalURL string, expireTime int64, userID *uuid.UUID) (entity.URL, error) {
+	if err := validateURL(originalURL); err != nil {
+		return entity.URL{}, err
+	}
 	encodeURL, err := s.encodeURL(originalURL, userID)
 	if err != nil {
 		return entity.URL{}, err

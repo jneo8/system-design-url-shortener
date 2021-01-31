@@ -9,7 +9,7 @@ import (
 
 type shortenerFuncForm struct {
 	APIDevKey   string `form:"api_dev_key"`
-	UserID      string `form:"userID" binding:"uuid"`
+	UserID      string `form:"userID"`
 	OriginalURL string `form:"originalURL" binding:"required"`
 	ExpireTime  int64  `form:"expireTime"`
 }
@@ -29,15 +29,18 @@ func shortenerFunc(service entity.ShortenURLService) gin.HandlerFunc {
 		}
 
 		if form.APIDevKey != apiDevKey {
-			logger.Debug("Not dev")
 			// TODO: Check rate limit.
 		}
-		userID := uuid.MustParse(form.UserID)
+
+		var userID *uuid.UUID
+		if userUUID, err := uuid.Parse(form.UserID); err == nil {
+			userID = &userUUID
+		}
 
 		url, err := service.ShortenURL(
 			form.OriginalURL,
 			form.ExpireTime,
-			&userID,
+			userID,
 		)
 
 		if err != nil {
@@ -50,8 +53,18 @@ func shortenerFunc(service entity.ShortenURLService) gin.HandlerFunc {
 			return
 		}
 
+		var schema string
+		switch c.Request.Proto {
+		case "HTTP/1.1":
+			schema = "http"
+		case "HTTPS/2":
+			schema = "https"
+		default:
+			schema = "http"
+		}
+
 		c.JSON(http.StatusOK, gin.H{
-			"url": url.ShortURL,
+			"url": schema + "://" + c.Request.Host + "/" + url.ShortURL,
 		})
 	}
 }

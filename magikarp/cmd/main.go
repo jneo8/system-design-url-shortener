@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/jneo8/mermaid"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -22,6 +23,12 @@ func init() {
 	cmd.Flags().Bool("postgres_prefer_simple_protocol", true, "disables implicit prepared statement usage. By default pgx automatically uses the extended protocol")
 	// shortenURL
 	cmd.Flags().Int("shortenurl_url_length", 6, "Encoded URL length.")
+	// API
+	cmd.Flags().Int("session_size", 6, "maximum number of idle connections")
+	cmd.Flags().String("session_password", "", "redis-password")
+	cmd.Flags().String("session_network", "tcp", "tcp or udp")
+	cmd.Flags().String("session_address", "localhost:6379", "host:port")
+	cmd.Flags().StringSlice("session_key_pairs", []string{}, "The first key in a pair is used for authentication and the second for encryption. The encryption key can be set to nil or omitted in the last pair, but the authentication key is required in all pairs.")
 }
 
 var cmd = &cobra.Command{
@@ -33,18 +40,15 @@ var cmd = &cobra.Command{
 			shortenurl.New,
 			postgres.New,
 			cache.New,
+			api.NewRedisSessionStore,
+			api.RegisterAPI,
 		}
 		return mermaid.Run(cmd, runable, initializers...)
 	},
 }
 
-func runable(cfg *viper.Viper, logger *log.Logger, shortenURLService entity.ShortenURLService) error {
-	r, err := api.RegisterAPI(logger, cfg.GetString("api_dev_key"), shortenURLService)
-	if err != nil {
-		logger.Error(err)
-		return err
-	}
-	if err := r.Run(); err != nil {
+func runable(cfg *viper.Viper, logger *log.Logger, shortenURLService entity.ShortenURLService, engine *gin.Engine) error {
+	if err := engine.Run(); err != nil {
 		logger.Error(err)
 		return err
 	}

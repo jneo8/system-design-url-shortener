@@ -7,13 +7,6 @@ import (
 	"net/http"
 )
 
-type shortenerFuncForm struct {
-	APIDevKey   string `form:"api_dev_key"`
-	UserID      string `form:"userID"`
-	OriginalURL string `form:"originalURL" binding:"required"`
-	ExpireTime  int64  `form:"expireTime"`
-}
-
 func shortenerFunc(service entity.ShortenURLService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var form shortenerFuncForm

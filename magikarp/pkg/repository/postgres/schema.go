@@ -6,15 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func entityURLToURL(url entity.URL) URL {
-	return URL{
-		UserID:      url.UserID,
-		OriginalURL: url.OriginalURL,
-		ShortURL:    url.ShortURL,
-		ExpireTime:  url.ExpireTime,
-	}
-}
-
 // URL ...
 type URL struct {
 	gorm.Model

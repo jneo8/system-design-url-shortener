@@ -7,6 +7,7 @@ import (
 
 func pingFunc() gin.HandlerFunc { // nolint
 	return func(c *gin.Context) {
+		logger.Info("ping")
 		c.JSON(
 			http.StatusOK,
 			gin.H{

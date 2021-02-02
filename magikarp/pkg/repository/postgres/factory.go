@@ -16,7 +16,7 @@ type Config struct {
 }
 
 // New is a simple factory func return URLBackend.
-func New(logger *log.Logger, config Config) (entity.URLBackend, error) {
+func New(logger *log.Logger, config Config) (entity.Backend, error) {
 	db, err := gorm.Open(
 		postgres.New(
 			postgres.Config{

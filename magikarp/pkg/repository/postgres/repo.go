@@ -16,6 +16,9 @@ func (r *repo) InitSchema() error {
 	if err := r.DB.AutoMigrate(&URL{}); err != nil {
 		return err
 	}
+	if err := r.DB.AutoMigrate(&User{}); err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -6,6 +6,9 @@ import (
 
 // ShortenURLService is service handle shorten url.
 type ShortenURLService interface {
+	// User
+	NewUser(user User) (User, error)
+	UserLogin(user User) bool
 	// Return new shorten url.
 	ShortenURL(
 		originalURL string,
@@ -23,12 +26,14 @@ type ShortenURLService interface {
 	) (err error)
 }
 
-// URLBackend is repository interface for all db backend.
-type URLBackend interface {
+// Backend is repository interface for db backend.
+type Backend interface {
 	NewURL(url URL) (URL, error)
 	DeleteURL(urlID int64) error
 	GetURLByShortURL(shortURL string) (url URL, err error)
 	InitSchema() error
+	NewUser(user User) (User, error)
+	UserLogin(user User) bool
 }
 
 // CacheBackend is interface for shortenURL cache.

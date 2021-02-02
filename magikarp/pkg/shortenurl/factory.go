@@ -7,14 +7,14 @@ import (
 )
 
 // New is factory function for create shorten url service
-func New(logger *log.Logger, urlBackend entity.URLBackend, cacheBackend entity.CacheBackend, config Config) (entity.ShortenURLService, error) {
-	if err := urlBackend.InitSchema(); err != nil {
+func New(logger *log.Logger, backend entity.Backend, cacheBackend entity.CacheBackend, config Config) (entity.ShortenURLService, error) {
+	if err := backend.InitSchema(); err != nil {
 		return nil, err
 	}
 	return &service{
 		Logger:       logger,
 		Config:       config,
-		URLBackend:   urlBackend,
+		Backend:      backend,
 		CacheBackend: cacheBackend,
 	}, nil
 }

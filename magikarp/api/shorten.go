@@ -1,8 +1,9 @@
 package api
 
 import (
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	// "github.com/google/uuid"
 	"github.com/system-design-url-shortener/magikarp/entity"
 	"net/http"
 )
@@ -22,18 +23,18 @@ func shortenerFunc(service entity.ShortenURLService) gin.HandlerFunc {
 		}
 
 		if form.APIDevKey != apiDevKey {
+			logger.Debug("Not dev")
 			// TODO: Check rate limit.
 		}
 
-		var userID *uuid.UUID
-		if userUUID, err := uuid.Parse(form.UserID); err == nil {
-			userID = &userUUID
-		}
+		session := sessions.Default(c)
+		userName := session.Get("userName")
+		logger.Debug(userName)
 
 		url, err := service.ShortenURL(
 			form.OriginalURL,
 			form.ExpireTime,
-			userID,
+			nil,
 		)
 
 		if err != nil {
@@ -57,7 +58,7 @@ func shortenerFunc(service entity.ShortenURLService) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"url": schema + "://" + c.Request.Host + "/" + url.ShortURL,
+			"url": schema + "://" + c.Request.Host + "/r/" + url.ShortURL,
 		})
 	}
 }

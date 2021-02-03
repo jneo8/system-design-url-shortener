@@ -30,20 +30,21 @@ func RegisterAPI(newLogger *log.Logger, opts Opts, shortenURLService entity.Shor
 	r.Use(sessions.Sessions("userSession", store))
 
 	// Auth
-	r.POST("/signup", SignupFunc(shortenURLService))
-	r.POST("/login", LoginFunc(shortenURLService))
-	r.GET("/logout", Logout)
-
 	auth := r.Group("/auth")
 	auth.Use(AuthenticationFunc())
 	auth.GET("/ping", pingFunc())
 
+	r.POST("/signup", SignupFunc(shortenURLService))
+	r.POST("/login", LoginFunc(shortenURLService))
+	r.GET("/logout", Logout)
 	r.GET("/", pingFunc())
 
 	// shorten url
 	r.POST("/url", shortenerFunc(shortenURLService))
 
-	// r.GET("/:shortURL", getFunc(shortenURLService))
+	// Issue about gin: https://github.com/gin-gonic/gin/issues/1730
+	// Simply accept some flexibility lost now. Maybe need to change the api framework at the end.
+	r.GET("/r/:shortURL", getFunc(shortenURLService))
 
 	return r, nil
 }

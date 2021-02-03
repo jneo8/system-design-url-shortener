@@ -14,8 +14,8 @@ type SignupForm struct {
 }
 
 type shortenerFuncForm struct {
-	APIDevKey   string `form:"apiDevKey"`
-	UserID      string `form:"userID"`
+	APIDevKey string `form:"apiDevKey"`
+	// UserID      string `form:"userID"`
 	OriginalURL string `form:"originalURL" binding:"required"`
 	ExpireTime  int64  `form:"expireTime"`
 }

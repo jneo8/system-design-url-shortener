@@ -28,7 +28,7 @@ func init() {
 	cmd.Flags().String("session_password", "", "redis-password")
 	cmd.Flags().String("session_network", "tcp", "tcp or udp")
 	cmd.Flags().String("session_address", "localhost:6379", "host:port")
-	cmd.Flags().StringSlice("session_key_pairs", []string{}, "The first key in a pair is used for authentication and the second for encryption. The encryption key can be set to nil or omitted in the last pair, but the authentication key is required in all pairs.")
+	cmd.Flags().StringSlice("session_key_pairs", []string{"secret"}, "The first key in a pair is used for authentication and the second for encryption. The encryption key can be set to nil or omitted in the last pair, but the authentication key is required in all pairs.")
 }
 
 var cmd = &cobra.Command{

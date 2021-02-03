@@ -7,14 +7,21 @@ import (
 	"net/http"
 )
 
+const (
+	userKey = "user"
+)
+
 // AuthenticationFunc ...
 func AuthenticationFunc() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		sessionID := session.Get("id")
-		if sessionID == nil {
-			c.JSON(http.StatusNotFound, gin.H{"meassage": "unauthorized"})
+		userName := session.Get(userKey)
+		if userName == nil {
+			logger.Debug("No Auth")
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"meassage": "unauthorized"})
+			return
 		}
+		logger.Debugf("Auth: %s", userName)
 		c.Next()
 	}
 }
@@ -75,8 +82,13 @@ func LoginFunc(shortenURLService entity.ShortenURLService) gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"meassage": "Username or password incorrect"})
 			return
 		}
-		session.Set("userName", userName)
-		session.Save()
+		// Save session.
+		session.Set(userKey, userName)
+		if err := session.Save(); err != nil {
+			logger.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to save session"})
+			return
+		}
 		logger.Infof("User login: %s", userName)
 		c.JSON(http.StatusOK, gin.H{"meassage": "Sign In Successfully"})
 	}
@@ -86,6 +98,10 @@ func LoginFunc(shortenURLService entity.ShortenURLService) gin.HandlerFunc {
 func Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Clear()
-	session.Save()
+	if err := session.Save(); err != nil {
+		logger.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to save session"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"meassage": "Sign out Successfully"})
 }

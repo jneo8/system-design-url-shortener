@@ -71,6 +71,7 @@ func (s *service) GetByShortURL(shortURL string) (string, error) {
 // uniquenessKey now generate by random. It could be a increasing sequence number ( save in zookeeper)
 func (s *service) encodeURL(originalURL string, userID *uuid.UUID) (string, error) {
 	h := md5.New()
+
 	if userID != nil {
 		if _, err := io.WriteString(h, userID.String()); err != nil {
 			return "", err
@@ -90,6 +91,6 @@ func (s *service) encodeURL(originalURL string, userID *uuid.UUID) (string, erro
 	return hex.EncodeToString(h.Sum(nil))[:s.Config.URLLength], nil
 }
 
-func (s *service) UserLogin(user entity.User) bool {
+func (s *service) UserLogin(user entity.User) (entity.User, bool) {
 	return s.Backend.UserLogin(user)
 }

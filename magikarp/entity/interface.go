@@ -8,7 +8,8 @@ import (
 type ShortenURLService interface {
 	// User
 	NewUser(user User) (User, error)
-	UserLogin(user User) bool
+	UserLogin(user User) (User, bool)
+
 	// Return new shorten url.
 	ShortenURL(
 		originalURL string,
@@ -33,7 +34,7 @@ type Backend interface {
 	GetURLByShortURL(shortURL string) (url URL, err error)
 	InitSchema() error
 	NewUser(user User) (User, error)
-	UserLogin(user User) bool
+	UserLogin(user User) (User, bool)
 }
 
 // CacheBackend is interface for shortenURL cache.

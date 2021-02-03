@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	userKey = "user"
+	userKey = "userID"
 )
 
 // AuthenticationFunc ...
@@ -78,18 +78,21 @@ func LoginFunc(shortenURLService entity.ShortenURLService) gin.HandlerFunc {
 		session := sessions.Default(c)
 		userName := c.PostForm("userName")
 		password := c.PostForm("password")
-		if !shortenURLService.UserLogin(entity.User{UserName: userName, Password: password}) {
+
+		user, ok := shortenURLService.UserLogin(entity.User{UserName: userName, Password: password})
+		if !ok {
 			c.JSON(http.StatusBadRequest, gin.H{"meassage": "Username or password incorrect"})
 			return
 		}
+
 		// Save session.
-		session.Set(userKey, userName)
+		session.Set(userKey, user.ID.String())
 		if err := session.Save(); err != nil {
 			logger.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to save session"})
 			return
 		}
-		logger.Infof("User login: %s", userName)
+		logger.Infof("User login: %s %s", user.ID, user.UserName)
 		c.JSON(http.StatusOK, gin.H{"meassage": "Sign In Successfully"})
 	}
 }

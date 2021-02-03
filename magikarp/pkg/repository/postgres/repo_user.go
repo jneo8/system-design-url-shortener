@@ -12,14 +12,14 @@ func (r *repo) NewUser(entityUser entity.User) (entity.User, error) {
 	return user.toEntityUser(), nil
 }
 
-func (r *repo) UserLogin(entityUser entity.User) bool {
+func (r *repo) UserLogin(entityUser entity.User) (entity.User, bool) {
 	dbUser := User{}
 	if result := r.DB.Where(&User{UserName: entityUser.UserName}).Take(&dbUser); result.Error != nil {
 		r.Logger.Error(result.Error)
-		return false
+		return entityUser, false
 	}
 	if !CompareHashAndPassword(dbUser.Password, entityUser.Password) {
-		return false
+		return entityUser, false
 	}
-	return true
+	return dbUser.toEntityUser(), true
 }

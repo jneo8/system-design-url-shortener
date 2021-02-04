@@ -9,6 +9,7 @@ import (
 
 func init() {
 	rootCMD.AddCommand(generatorCMD)
+	rootCMD.PersistentFlags().String("log_level", "info", "Logger Level")
 }
 
 var rootCMD = &cobra.Command{

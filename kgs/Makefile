@@ -51,7 +51,10 @@ test:  ## Run go test
 test-service-up:  ## Service up for dev testing.
 	docker-compose -f ./docker-compose.test.yaml up -d
 
-.PHONY: test-service-up
+conn-mongo:  ## Conn to mongo
+	docker exec -it kgs_mongo_1 mongo mongodb://mongo:mongo123@localhost:27017
+
+.PHONY: test-service-up conn-mongo
 
 
 ##@ Help

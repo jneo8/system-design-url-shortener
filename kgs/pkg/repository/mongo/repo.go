@@ -50,6 +50,18 @@ func (r *repo) createIndexes() error {
 }
 
 func (r *repo) KeyBatchInsert(keys []string) (int, error) {
+	structKeys := []interface{}{}
+	for _, k := range keys {
+		structKeys = append(structKeys, Key{Key: k, Used: false, ExpireAt: 0})
+	}
+	res, err := r.keyCollection().InsertMany(context.TODO(), structKeys)
+	if err != nil {
+		return 0, err
+	}
+	return len(res.InsertedIDs), nil
+}
+
+func (r *repo) KeyBatchUpsert(keys []string) (int, error) {
 	models := []mongo.WriteModel{}
 	for _, k := range keys {
 		models = append(

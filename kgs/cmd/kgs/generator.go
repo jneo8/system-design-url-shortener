@@ -20,6 +20,7 @@ func init() {
 	generatorCMD.Flags().Int("batch_size", 20000, "Batch insert size.")
 	generatorCMD.Flags().Int("length", 6, "Length of unique key.")
 	generatorCMD.Flags().Int("worker_n", 4, "Number of generator worker.")
+	generatorCMD.Flags().Bool("upsert", false, "Enable upsert method.")
 	addMongoFlags(generatorCMD)
 }
 
@@ -38,9 +39,10 @@ var generatorCMD = &cobra.Command{
 
 type generatorCMDOpts struct {
 	dig.In
-	Length    int `name:"length"`
-	BatchSize int `name:"batch_size"`
-	WorkerN   int `name:"worker_n"`
+	Length    int  `name:"length"`
+	BatchSize int  `name:"batch_size"`
+	WorkerN   int  `name:"worker_n"`
+	Upsert    bool `name:"upsert"`
 }
 
 func generatorRunable(logger *log.Logger, opts generatorCMDOpts, repo entity.KeyRepository) error {
@@ -67,7 +69,14 @@ func generatorRunable(logger *log.Logger, opts generatorCMDOpts, repo entity.Key
 		for k := range itemCh {
 			keys = append(keys, k)
 			if len(keys) >= opts.BatchSize {
-				_, err := repo.KeyBatchInsert(keys)
+				var err error
+				if opts.Upsert {
+					_, upsertErr := repo.KeyBatchUpsert(keys)
+					err = upsertErr
+				} else {
+					_, insertErr := repo.KeyBatchInsert(keys)
+					err = insertErr
+				}
 				if err != nil {
 					logger.Error(err)
 				}
@@ -75,7 +84,14 @@ func generatorRunable(logger *log.Logger, opts generatorCMDOpts, repo entity.Key
 			}
 		}
 		if len(keys) > 0 {
-			_, err := repo.KeyBatchInsert(keys)
+			var err error
+			if opts.Upsert {
+				_, upsertErr := repo.KeyBatchUpsert(keys)
+				err = upsertErr
+			} else {
+				_, insertErr := repo.KeyBatchInsert(keys)
+				err = insertErr
+			}
 			if err != nil {
 				logger.Error(err)
 			}
@@ -137,12 +153,4 @@ func getWorkerCoverRanges(workerN int) ([][]int, error) {
 		)
 	}
 	return workerCoverRanges, nil
-}
-
-func randStringRunes(length int) string {
-	b := make([]rune, length)
-	for i := range b {
-		b[i] = baseLetters[rand.Intn(len(baseLetters))]
-	}
-	return string(b)
 }

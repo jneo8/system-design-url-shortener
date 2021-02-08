@@ -11,6 +11,6 @@ type KeyRepository interface {
 	KeyBatchInsert(key []string) (int, error) // Batch insert key.
 	KeyBatchUpsert(key []string) (int, error) // Batch insert key.
 	Close() error
-	GetKey() (string, error)
+	GetKey(expire int64) (string, error)
 	// GetKeys() ([]string, error)
 }

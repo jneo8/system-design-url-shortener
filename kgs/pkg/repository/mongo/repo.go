@@ -98,7 +98,7 @@ func (r *repo) keyCollection() *mongo.Collection {
 	return r.Client.Database(r.Config.DB).Collection(r.Config.KeyCollection)
 }
 
-func (r *repo) GetKey() (string, error) {
+func (r *repo) GetKey(expire int64) (string, error) {
 	var returnKey string
 
 	session, err := r.Client.StartSession()
@@ -146,6 +146,15 @@ func (r *repo) GetKey() (string, error) {
 					Key: "$set",
 					Value: bson.D{
 						primitive.E{Key: "used", Value: true},
+						primitive.E{
+							Key: "expireAt",
+							Value: func() int64 {
+								if expire <= 0 {
+									return 0
+								}
+								return time.Now().Unix() + expire
+							}(),
+						},
 					},
 				},
 			},

@@ -10,13 +10,11 @@ import (
 	"github.com/system-design-url-shortener/kgs/pkg/repository/mongo"
 	"go.uber.org/dig"
 	"math"
-	"math/rand"
 	"sync"
 	"time"
 )
 
 func init() {
-	rand.Seed(time.Now().UTC().UnixNano())
 	generatorCMD.Flags().Int("batch_size", 20000, "Batch insert size.")
 	generatorCMD.Flags().Int("length", 6, "Length of unique key.")
 	generatorCMD.Flags().Int("worker_n", 4, "Number of generator worker.")
@@ -112,7 +110,7 @@ func generatorRunable(logger *log.Logger, opts generatorCMDOpts, repo entity.Key
 				start := time.Now()
 				n := i
 				s := ""
-				for n > 0 {
+				for j := 0; j < opts.Length; j++ {
 					s = s + string(baseLetters[n%len(baseLetters)])
 					n = n / len(baseLetters)
 				}

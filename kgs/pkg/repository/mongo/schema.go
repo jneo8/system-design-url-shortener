@@ -6,8 +6,7 @@ import (
 
 // Key ...
 type Key struct {
-	ID       primitive.ObjectID `bson:"_id"`
-	Key      string             `bson:"key"`
-	Used     bool               `bson:"used"`
-	ExpireAt uint64             `bson:"expireAt"`
+	ID   primitive.ObjectID `bson:"_id"`
+	Key  string             `bson:"key"`
+	Used bool               `bson:"used"`
 }

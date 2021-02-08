@@ -52,7 +52,7 @@ func (r *repo) createIndexes() error {
 func (r *repo) KeyBatchInsert(keys []string) (int, error) {
 	structKeys := []interface{}{}
 	for _, k := range keys {
-		structKeys = append(structKeys, Key{Key: k, Used: false, ExpireAt: 0})
+		structKeys = append(structKeys, Key{Key: k, Used: false})
 	}
 	res, err := r.keyCollection().InsertMany(context.TODO(), structKeys)
 	if err != nil {
@@ -78,8 +78,7 @@ func (r *repo) KeyBatchUpsert(keys []string) (int, error) {
 					primitive.E{
 						Key: "$set",
 						Value: bson.M{
-							"used":     false,
-							"expireAt": 0,
+							"used": false,
 						},
 					},
 				},
@@ -98,7 +97,7 @@ func (r *repo) keyCollection() *mongo.Collection {
 	return r.Client.Database(r.Config.DB).Collection(r.Config.KeyCollection)
 }
 
-func (r *repo) GetKey(expire int64) (string, error) {
+func (r *repo) GetKey() (string, error) {
 	var returnKey string
 
 	session, err := r.Client.StartSession()
@@ -146,15 +145,6 @@ func (r *repo) GetKey(expire int64) (string, error) {
 					Key: "$set",
 					Value: bson.D{
 						primitive.E{Key: "used", Value: true},
-						primitive.E{
-							Key: "expireAt",
-							Value: func() int64 {
-								if expire <= 0 {
-									return 0
-								}
-								return time.Now().Unix() + expire
-							}(),
-						},
 					},
 				},
 			},

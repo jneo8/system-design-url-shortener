@@ -9,6 +9,7 @@ import (
 
 func init() {
 	rootCMD.AddCommand(generatorCMD)
+	rootCMD.AddCommand(serverCMD)
 	rootCMD.PersistentFlags().String("log_level", "info", "Logger Level")
 }
 

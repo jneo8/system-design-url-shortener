@@ -97,3 +97,66 @@ func (r *repo) KeyBatchUpsert(keys []string) (int, error) {
 func (r *repo) keyCollection() *mongo.Collection {
 	return r.Client.Database(r.Config.DB).Collection(r.Config.KeyCollection)
 }
+
+func (r *repo) GetKey() (string, error) {
+	var returnKey string
+
+	session, err := r.Client.StartSession()
+	if err != nil {
+		r.Logger.Error(err)
+		return "", err
+	}
+	defer session.EndSession(context.TODO())
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	reErr := mongo.WithSession(ctx, session, func(sc mongo.SessionContext) error {
+
+		// Start transaction
+		if err := session.StartTransaction(); err != nil {
+			r.Logger.Error(err)
+			return err
+		}
+
+		// Get not used key.
+		result := r.keyCollection().FindOne(
+			ctx,
+			bson.D{primitive.E{Key: "used", Value: false}},
+		)
+		key := Key{}
+		if err := result.Decode(&key); err != nil {
+			switch err {
+			// No unused document in DB.
+			case mongo.ErrNoDocuments:
+				r.Logger.Warning(err)
+			default:
+				r.Logger.Error(err)
+			}
+			_ = session.AbortTransaction(context.Background())
+			return err
+		}
+
+		// Update key to used.
+		_, err := r.keyCollection().UpdateOne(
+			ctx,
+			bson.M{"_id": key.ID},
+			bson.D{
+				primitive.E{
+					Key: "$set",
+					Value: bson.D{
+						primitive.E{Key: "used", Value: true},
+					},
+				},
+			},
+		)
+		if err != nil {
+			r.Logger.Error(err)
+			_ = session.AbortTransaction(context.Background())
+			return err
+		}
+		returnKey = key.Key
+		return session.CommitTransaction(context.Background())
+	})
+	return returnKey, reErr
+}

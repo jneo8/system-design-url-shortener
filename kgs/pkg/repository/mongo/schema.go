@@ -1,8 +1,13 @@
 package mongo
 
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 // Key ...
 type Key struct {
-	Key      string
-	Used     bool
-	ExpireAt uint64
+	ID       primitive.ObjectID `bson:"_id"`
+	Key      string             `bson:"key"`
+	Used     bool               `bson:"used"`
+	ExpireAt uint64             `bson:"expireAt"`
 }

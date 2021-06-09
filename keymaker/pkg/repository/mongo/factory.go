@@ -2,13 +2,14 @@ package mongo
 
 import (
 	"context"
+	"time"
+
 	log "github.com/sirupsen/logrus"
-	"github.com/system-design-url-shortener/kgs/entity"
+	"github.com/system-design-url-shortener/keymaker/entity"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"go.uber.org/dig"
-	"time"
 )
 
 // Config for repo.

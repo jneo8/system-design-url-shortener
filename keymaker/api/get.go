@@ -1,10 +1,11 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"github.com/system-design-url-shortener/kgs/entity"
-	"net/http"
+	"github.com/system-design-url-shortener/keymaker/entity"
 )
 
 func getFunc(logger *log.Logger, repo entity.KeyRepository) gin.HandlerFunc {

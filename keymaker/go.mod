@@ -1,4 +1,4 @@
-module github.com/system-design-url-shortener/kgs
+module github.com/system-design-url-shortener/keymaker
 
 go 1.15
 

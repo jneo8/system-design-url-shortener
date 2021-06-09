@@ -2,16 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/jneo8/mermaid"
-	log "github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
-	"github.com/system-design-url-shortener/kgs/entity"
-	"github.com/system-design-url-shortener/kgs/pkg/progressbar"
-	"github.com/system-design-url-shortener/kgs/pkg/repository/mongo"
-	"go.uber.org/dig"
 	"math"
 	"sync"
 	"time"
+
+	"github.com/jneo8/mermaid"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+	"github.com/system-design-url-shortener/keymaker/entity"
+	"github.com/system-design-url-shortener/keymaker/pkg/progressbar"
+	"github.com/system-design-url-shortener/keymaker/pkg/repository/mongo"
+	"go.uber.org/dig"
 )
 
 func init() {

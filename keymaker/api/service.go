@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"github.com/system-design-url-shortener/kgs/entity"
+	"github.com/system-design-url-shortener/keymaker/entity"
 )
 
 type service struct {

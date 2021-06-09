@@ -4,9 +4,9 @@ import (
 	"github.com/jneo8/mermaid"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/system-design-url-shortener/kgs/api"
-	"github.com/system-design-url-shortener/kgs/entity"
-	"github.com/system-design-url-shortener/kgs/pkg/repository/mongo"
+	"github.com/system-design-url-shortener/keymaker/api"
+	"github.com/system-design-url-shortener/keymaker/entity"
+	"github.com/system-design-url-shortener/keymaker/pkg/repository/mongo"
 )
 
 func init() {
@@ -15,7 +15,7 @@ func init() {
 
 var serverCMD = &cobra.Command{
 	Use:   "server",
-	Short: "Run kgs server",
+	Short: "Run keymaker server",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		initializers := []interface{}{
 			api.New,

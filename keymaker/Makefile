@@ -1,5 +1,5 @@
 ## Basic
-PROJ="kgs"
+PROJ="keymaker"
 TIME=$$(date +%Y-%m-%d_%H:%M)
 
 ## Git
@@ -30,13 +30,13 @@ lint-testing:  ## Run lint
 ##@ Go CMD
 
 run:  ## Run
-	${GO} run cmd/kgs/*.go
+	${GO} run cmd/*.go
 
 run-dev:  ## Run as developer mode
-	${GO} run cmd/kgs/*.go --log_level debug
+	${GO} run cmd/*.go --log_level debug
 
 build:  ## Go build bin
-	${GO}  build -o ./bin/${PROJ}  -ldflags "-s -w -X main.date=${TIME} -X main.commit=${COMMIT} -X main.version=${VERSION}" ./cmd/kgs/*.go
+	${GO}  build -o ./bin/${PROJ}  -ldflags "-s -w -X main.date=${TIME} -X main.commit=${COMMIT} -X main.version=${VERSION}" ./cmd/*.go
 
 ##@ Testing
 
@@ -52,7 +52,7 @@ test-service-up:  ## Service up for dev testing.
 	docker-compose -f ./docker-compose.test.yaml up -d
 
 conn-mongo:  ## Conn to mongo
-	docker exec -it kgs_mongo_1 mongo mongodb://mongo:mongo123@localhost:27017
+	docker exec -it ${PROJ}_mongo_1 mongo mongodb://mongo:mongo123@localhost:27017
 
 .PHONY: test-service-up conn-mongo
 

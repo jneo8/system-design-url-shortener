@@ -38,13 +38,21 @@ run-dev:  ## Run as developer mode
 build:  ## Go build bin
 	${GO}  build -o ./bin/${PROJ}  -ldflags "-s -w -X main.date=${TIME} -X main.commit=${COMMIT} -X main.version=${VERSION}" ./cmd/*.go
 
+.PHONY: run run-dev build
+
 ##@ Testing
 
 test:  ## Run go test
+	${GO} test -v -short -cover ./...
+
+test-no-short:  ## Run go test
 	${GO} test -v -cover ./...
 
+gen-mock:  ## Run mockery
+	mockery --all --keeptree
 
-.PHONY: run run-dev build
+
+.PHONY: test test-no-short gen-mock
 
 ##@ Dev testing
 

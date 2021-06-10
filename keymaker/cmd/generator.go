@@ -6,12 +6,13 @@ import (
 	"sync"
 	"time"
 
+	"jneo8/system-design-url-shortener/keymaker/entity"
+	"jneo8/system-design-url-shortener/keymaker/pkg/progressbar"
+	"jneo8/system-design-url-shortener/keymaker/pkg/repository/mongo"
+
 	"github.com/jneo8/mermaid"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/system-design-url-shortener/keymaker/entity"
-	"github.com/system-design-url-shortener/keymaker/pkg/progressbar"
-	"github.com/system-design-url-shortener/keymaker/pkg/repository/mongo"
 	"go.uber.org/dig"
 )
 

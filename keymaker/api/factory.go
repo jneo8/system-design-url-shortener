@@ -1,9 +1,10 @@
 package api
 
 import (
+	"jneo8/system-design-url-shortener/keymaker/entity"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"github.com/system-design-url-shortener/keymaker/entity"
 )
 
 // New factory func.

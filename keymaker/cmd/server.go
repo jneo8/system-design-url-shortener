@@ -1,12 +1,13 @@
 package main
 
 import (
+	"jneo8/system-design-url-shortener/keymaker/api"
+	"jneo8/system-design-url-shortener/keymaker/entity"
+	"jneo8/system-design-url-shortener/keymaker/pkg/repository/mongo"
+
 	"github.com/jneo8/mermaid"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/system-design-url-shortener/keymaker/api"
-	"github.com/system-design-url-shortener/keymaker/entity"
-	"github.com/system-design-url-shortener/keymaker/pkg/repository/mongo"
 )
 
 func init() {

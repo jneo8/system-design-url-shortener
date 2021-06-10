@@ -3,9 +3,10 @@ package api
 import (
 	"net/http"
 
+	"jneo8/system-design-url-shortener/keymaker/entity"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"github.com/system-design-url-shortener/keymaker/entity"
 )
 
 func getFunc(logger *log.Logger, repo entity.KeyRepository) gin.HandlerFunc {

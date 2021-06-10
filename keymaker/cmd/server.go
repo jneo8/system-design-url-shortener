@@ -29,10 +29,6 @@ var serverCMD = &cobra.Command{
 
 func serverRunable(logger *log.Logger, apiService entity.APIService, repo entity.KeyRepository) error {
 	defer repo.Close()
-	if err := repo.Init(); err != nil {
-		return err
-	}
-
 	if err := apiService.Run(); err != nil {
 		return err
 	}

@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 type repo struct {
@@ -16,6 +17,12 @@ type repo struct {
 	Client        *mongo.Client
 	Logger        *log.Logger
 	KeyCollection string
+}
+
+func (r *repo) Ping() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	return r.Client.Ping(ctx, readpref.Primary())
 }
 
 func (r *repo) Close() error {
@@ -27,14 +34,7 @@ func (r *repo) Close() error {
 	return nil
 }
 
-func (r *repo) Init() error {
-	if err := r.createIndexes(); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *repo) createIndexes() error {
+func (r *repo) CreateIndexes() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	mod := mongo.IndexModel{

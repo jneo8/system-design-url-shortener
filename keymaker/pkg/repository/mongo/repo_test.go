@@ -77,7 +77,7 @@ func Test_repo_Close(t *testing.T) {
 	}
 }
 
-func Test_repo_Init(t *testing.T) {
+func Test_repo_CreateIndexes(t *testing.T) {
 	type fields struct {
 		Config        Config
 		Client        *mongo.Client
@@ -99,37 +99,8 @@ func Test_repo_Init(t *testing.T) {
 				Logger:        tt.fields.Logger,
 				KeyCollection: tt.fields.KeyCollection,
 			}
-			if err := r.Init(); (err != nil) != tt.wantErr {
-				t.Errorf("repo.Init() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func Test_repo_createIndexes(t *testing.T) {
-	type fields struct {
-		Config        Config
-		Client        *mongo.Client
-		Logger        *log.Logger
-		KeyCollection string
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			r := &repo{
-				Config:        tt.fields.Config,
-				Client:        tt.fields.Client,
-				Logger:        tt.fields.Logger,
-				KeyCollection: tt.fields.KeyCollection,
-			}
-			if err := r.createIndexes(); (err != nil) != tt.wantErr {
-				t.Errorf("repo.createIndexes() error = %v, wantErr %v", err, tt.wantErr)
+			if err := r.CreateIndexes(); (err != nil) != tt.wantErr {
+				t.Errorf("repo.CreateIndexes() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

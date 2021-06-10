@@ -48,7 +48,7 @@ type generatorCMDOpts struct {
 func generatorRunable(logger *log.Logger, opts generatorCMDOpts, repo entity.KeyRepository) error {
 	// Close repo conn.
 	defer repo.Close()
-	if err := repo.Init(); err != nil {
+	if err := repo.CreateIndexes(); err != nil {
 		return err
 	}
 
